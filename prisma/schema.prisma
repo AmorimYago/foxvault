@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GalleryVisibility {
+  PRIVATE
+  SHARED
+  PUBLIC
+}
+
+enum GalleryMemberRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id                 String          @id @default(cuid())
+  name               String?
+  email              String          @unique
+  image              String?
+  storageUsed        BigInt          @default(0)
+  ownedGalleries     Gallery[]       @relation("GalleryOwner")
+  galleryMemberships GalleryMember[]
+  uploadedImages     Image[]         @relation("ImageUploader")
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@map("users")
+}
+
+model Gallery {
+  id           String            @id @default(cuid())
+  name         String
+  description  String?
+  coverImageId String?
+  visibility   GalleryVisibility @default(PRIVATE)
+  ownerId      String
+  owner        User              @relation("GalleryOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members      GalleryMember[]
+  images       Image[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([ownerId])
+  @@map("galleries")
+}
+
+model GalleryMember {
+  id        String            @id @default(cuid())
+  galleryId String
+  userId    String
+  role      GalleryMemberRole @default(VIEWER)
+  gallery   Gallery           @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@unique([galleryId, userId])
+  @@index([userId])
+  @@map("gallery_members")
+}
+
+model Image {
+  id               String   @id @default(cuid())
+  originalFilename String
+  storageKey       String   @unique
+  contentType      String
+  sizeInBytes      BigInt
+  width            Int?
+  height           Int?
+  comment          String?
+  galleryId        String
+  uploadedById     String
+  gallery          Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  uploadedBy       User     @relation("ImageUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([galleryId])
+  @@index([uploadedById])
+  @@index([createdAt])
+  @@map("images")
+}

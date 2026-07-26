@@ -1,0 +1,16 @@
+services:
+  foxvault-database:
+    image: postgres:17-alpine
+    container_name: foxvault_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: foxvault
+      POSTGRES_PASSWORD: foxvault
+      POSTGRES_DB: foxvault
+    ports:
+      - "5434:5432"
+    volumes:
+      - foxvault_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  foxvault_postgres_data:
