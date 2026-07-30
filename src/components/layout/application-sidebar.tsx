@@ -8,6 +8,7 @@ import {
 
 import { type NavigationItem } from "@/types/navigation-item";
 
+import { ApplicationFooter } from "./application-footer";
 import { ApplicationSidebarNavigationItem } from "./application-sidebar-navigation-item";
 import { Logo } from "./logo";
 
@@ -49,8 +50,8 @@ const footerNavigationItems: NavigationItem[] = [
 
 export function ApplicationSidebar() {
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-neutral-200 bg-white">
-      <div className="border-b border-neutral-200 px-6 py-5">
+    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-zinc-800 bg-zinc-900">
+      <div className="border-b border-zinc-800 px-6 py-5">
         <Logo />
       </div>
 
@@ -64,7 +65,7 @@ export function ApplicationSidebar() {
         </ul>
       </nav>
 
-      <div className="border-t border-neutral-200 p-3">
+      <div className="border-t border-zinc-800 p-3">
         <ul className="space-y-1">
           {footerNavigationItems.map((item) => (
             <li key={item.id}>
@@ -72,6 +73,8 @@ export function ApplicationSidebar() {
             </li>
           ))}
         </ul>
+
+        <ApplicationFooter />
       </div>
     </aside>
   );

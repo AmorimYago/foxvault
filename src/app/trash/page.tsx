@@ -2,19 +2,20 @@ import { Trash2 } from "lucide-react";
 
 export default function TrashPage() {
   return (
-    <section className="flex h-full flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-neutral-100">
-        <Trash2 className="size-5 text-neutral-500" />
+    <section className="flex min-h-full items-center justify-center p-8">
+      <div className="flex max-w-md flex-col items-center text-center">
+        <div className="mb-4 flex size-14 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
+          <Trash2 className="size-6 text-zinc-400" />
+        </div>
+
+        <h2 className="text-xl font-semibold text-zinc-100">
+          Lixeira vazia
+        </h2>
+
+        <p className="mt-2 text-sm text-zinc-400">
+          Nenhuma imagem foi movida para a lixeira.
+        </p>
       </div>
-
-      <h1 className="text-lg font-semibold text-neutral-950">
-        Nenhuma imagem foi movida para a lixeira
-      </h1>
-
-      <p className="mt-2 max-w-md text-sm text-neutral-500">
-        As imagens excluídas poderão ser recuperadas ou removidas permanentemente
-        por aqui.
-      </p>
     </section>
   );
 }

@@ -34,15 +34,13 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-screen bg-neutral-50">
-        <ApplicationSidebar />
+      <body className="flex min-h-screen bg-zinc-950 text-zinc-100">
+  <ApplicationSidebar />
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          {/* ApplicationHeader ficará aqui */}
-
-          <main className="flex-1">{children}</main>
-        </div>
-      </body>
+  <div className="flex min-w-0 flex-1 flex-col">
+    <main className="flex-1">{children}</main>
+  </div>
+</body>
     </html>
   );
 }
