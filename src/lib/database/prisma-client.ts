@@ -1,19 +1,16 @@
 import { PrismaPg } from "@prisma/adapter-pg";
+
 import { PrismaClient } from "@/generated/prisma/client";
+
+import { getRuntimeDatabaseUrl } from "./database-url";
 
 const globalForPrisma = globalThis as {
   prismaClient?: PrismaClient;
 };
 
-const createPrismaClient = () => {
-  const connectionString = process.env.DATABASE_URL;
-
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not defined.");
-  }
-
+function createPrismaClient() {
   const adapter = new PrismaPg({
-    connectionString,
+    connectionString: getRuntimeDatabaseUrl(),
   });
 
   return new PrismaClient({
@@ -23,7 +20,7 @@ const createPrismaClient = () => {
         ? ["query", "warn", "error"]
         : ["error"],
   });
-};
+}
 
 export const prismaClient =
   globalForPrisma.prismaClient ?? createPrismaClient();
