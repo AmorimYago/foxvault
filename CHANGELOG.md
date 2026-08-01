@@ -6,6 +6,47 @@ O projeto segue Versionamento Semântico (SemVer).
 
 ---
 
+## v0.5.0
+
+### Added
+
+#### Galleries
+
+- Gallery listing page
+- Empty galleries state
+- Gallery creation dialog
+- Gallery creation with PostgreSQL persistence
+- Gallery cards and responsive grid
+- Gallery visibility options: private, shared, and public
+- Gallery editing
+- Gallery deletion with confirmation
+- Image count display on gallery cards
+- Loading states for gallery mutations
+
+#### Architecture
+
+- Gallery validation schemas with Zod
+- Gallery Server Actions
+- Gallery service layer
+- Gallery repository layer
+- Typed action states
+- Owner-based authorization for gallery updates and deletions
+
+### Changed
+
+- Sidebar now remains visible while scrolling
+- Gallery forms reset when cancelled or closed
+- Gallery action menus close when clicking outside
+- Improved dialog backdrop interaction
+- Improved gallery empty-state layout
+
+### Fixed
+
+- Gallery creation dialog not closing after consecutive submissions
+- Gallery action menu being clipped by card overflow
+- Edit dialog closing while selecting text
+- Unsaved gallery edits remaining after cancellation
+
 ## v0.4.0
 
 ### Added

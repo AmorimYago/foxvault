@@ -50,7 +50,7 @@ const footerNavigationItems: NavigationItem[] = [
 
 export function ApplicationSidebar() {
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-zinc-800 bg-zinc-900">
+    <aside className="sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r border-zinc-800 bg-zinc-900">
       <div className="border-b border-zinc-800 px-6 py-5">
         <Logo />
       </div>

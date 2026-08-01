@@ -4,14 +4,14 @@ import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
 
-import { createGallerySchema } from "../schemas/create-gallery-schema";
-import { createGalleryService } from "../services/create-gallery-service";
-import { type CreateGalleryActionState } from "../types/create-gallery-action-state";
+import { updateGallerySchema } from "../schemas/update-gallery-schema";
+import { updateGalleryService } from "../services/update-gallery-service";
+import { type UpdateGalleryActionState } from "../types/update-gallery-action-state";
 
-export async function createGalleryAction(
-  _previousState: CreateGalleryActionState,
+export async function updateGalleryAction(
+  _previousState: UpdateGalleryActionState,
   formData: FormData,
-): Promise<CreateGalleryActionState> {
+): Promise<UpdateGalleryActionState> {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -21,7 +21,8 @@ export async function createGalleryAction(
     };
   }
 
-  const validationResult = createGallerySchema.safeParse({
+  const validationResult = updateGallerySchema.safeParse({
+    galleryId: formData.get("galleryId"),
     name: formData.get("name"),
     description: formData.get("description"),
     visibility: formData.get("visibility"),
@@ -36,7 +37,7 @@ export async function createGalleryAction(
   }
 
   try {
-    await createGalleryService({
+    await updateGalleryService({
       ownerId: session.user.id,
       ...validationResult.data,
     });
@@ -45,16 +46,16 @@ export async function createGalleryAction(
 
     return {
       success: true,
-  submissionId: crypto.randomUUID(),
-  message: "Galeria criada com sucesso.",
+      submissionId: crypto.randomUUID(),
+      message: "Galeria atualizada com sucesso.",
     };
   } catch (error) {
-    console.error("Failed to create gallery:", error);
+    console.error("Failed to update gallery:", error);
 
     return {
       success: false,
       message:
-        "Não foi possível criar a galeria agora. Tente novamente em instantes.",
+        "Não foi possível atualizar a galeria agora. Tente novamente em instantes.",
     };
   }
 }
