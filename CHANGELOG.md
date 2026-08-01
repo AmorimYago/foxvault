@@ -6,6 +6,42 @@ O projeto segue Versionamento Semântico (SemVer).
 
 ---
 
+## v0.6.0
+
+### Added
+
+#### Production Infrastructure
+
+- First production deployment on Vercel
+- Production PostgreSQL database hosted on Neon
+- Google OAuth authentication configured for production
+- Production database migrations with Prisma Migrate
+- Stable production domain
+- Automatic deployments from the `main` branch
+
+#### Database
+
+- Centralized database connection URL resolution
+- Separate database connection strategies for application runtime and Prisma migrations
+- Support for Vercel and Neon environment variable names
+- Pooled database connection for the production application
+- Direct database connection for Prisma migrations
+
+### Changed
+
+- Prisma configuration now supports local Docker and Neon production environments
+- Prisma Client now resolves the correct database connection based on the environment
+- Environment variable documentation was improved
+
+### Fixed
+
+- Prisma generation failing during Vercel deployment
+- Production application unable to resolve Neon database variables
+- Google OAuth redirect URI mismatch in production
+- Auth.js failing because production database tables had not been migrated
+
+---
+
 ## v0.5.0
 
 ### Added
@@ -46,6 +82,8 @@ O projeto segue Versionamento Semântico (SemVer).
 - Gallery action menu being clipped by card overflow
 - Edit dialog closing while selecting text
 - Unsaved gallery edits remaining after cancellation
+
+---
 
 ## v0.4.0
 
