@@ -41,12 +41,13 @@ export async function createGalleryAction(
       ...validationResult.data,
     });
 
+    revalidatePath("/");
     revalidatePath("/galleries");
 
     return {
       success: true,
-  submissionId: crypto.randomUUID(),
-  message: "Galeria criada com sucesso.",
+      submissionId: crypto.randomUUID(),
+      message: "Galeria criada com sucesso.",
     };
   } catch (error) {
     console.error("Failed to create gallery:", error);

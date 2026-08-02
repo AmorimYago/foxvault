@@ -21,19 +21,24 @@ export function CreateGalleryDialog({ id }: CreateGalleryDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  const nameInputId = `${id}-name`;
+  const nameErrorId = `${id}-name-error`;
+  const descriptionInputId = `${id}-description`;
+  const descriptionErrorId = `${id}-description-error`;
+
   const [state, formAction] = useActionState(
     createGalleryAction,
     initialCreateGalleryActionState,
   );
 
   useEffect(() => {
-  if (!state.success || !state.submissionId) {
-    return;
-  }
+    if (!state.success || !state.submissionId) {
+      return;
+    }
 
-  formRef.current?.reset();
-  dialogRef.current?.close();
-}, [state.success, state.submissionId]);
+    formRef.current?.reset();
+    dialogRef.current?.close();
+  }, [state.success, state.submissionId]);
 
   function closeDialog() {
     dialogRef.current?.close();
@@ -73,34 +78,36 @@ export function CreateGalleryDialog({ id }: CreateGalleryDialogProps) {
         </button>
       </div>
 
-      <form ref={formRef} action={formAction} className="space-y-6 px-6 py-5">
+      <form
+        ref={formRef}
+        action={formAction}
+        className="space-y-6 px-6 py-5"
+      >
         <div>
           <label
-            htmlFor="gallery-name"
+            htmlFor={nameInputId}
             className="text-sm font-medium text-zinc-200"
           >
             Nome
           </label>
 
           <input
-            id="gallery-name"
+            id={nameInputId}
             name="name"
             type="text"
             required
             maxLength={80}
             autoComplete="off"
             placeholder="Ex.: Wallpapers"
+            aria-invalid={Boolean(state.fieldErrors?.name)}
             aria-describedby={
-              state.fieldErrors?.name ? "gallery-name-error" : undefined
+              state.fieldErrors?.name ? nameErrorId : undefined
             }
             className="mt-2 h-11 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
           />
 
           {state.fieldErrors?.name && (
-            <p
-              id="gallery-name-error"
-              className="mt-2 text-xs text-red-400"
-            >
+            <p id={nameErrorId} className="mt-2 text-xs text-red-400">
               {state.fieldErrors.name[0]}
             </p>
           )}
@@ -109,7 +116,7 @@ export function CreateGalleryDialog({ id }: CreateGalleryDialogProps) {
         <div>
           <div className="flex items-center justify-between gap-4">
             <label
-              htmlFor="gallery-description"
+              htmlFor={descriptionInputId}
               className="text-sm font-medium text-zinc-200"
             >
               Descrição
@@ -119,14 +126,15 @@ export function CreateGalleryDialog({ id }: CreateGalleryDialogProps) {
           </div>
 
           <textarea
-            id="gallery-description"
+            id={descriptionInputId}
             name="description"
             rows={3}
             maxLength={300}
             placeholder="Conte um pouco sobre esta galeria..."
+            aria-invalid={Boolean(state.fieldErrors?.description)}
             aria-describedby={
               state.fieldErrors?.description
-                ? "gallery-description-error"
+                ? descriptionErrorId
                 : undefined
             }
             className="mt-2 w-full resize-none rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
@@ -134,7 +142,7 @@ export function CreateGalleryDialog({ id }: CreateGalleryDialogProps) {
 
           {state.fieldErrors?.description && (
             <p
-              id="gallery-description-error"
+              id={descriptionErrorId}
               className="mt-2 text-xs text-red-400"
             >
               {state.fieldErrors.description[0]}
