@@ -28,8 +28,8 @@ const visibilityConfiguration = {
   },
 } as const;
 
-function getGalleryHref() {
-  return "/galleries";
+function getGalleryHref(galleryId: string) {
+  return `/galleries/${galleryId}`;
 }
 
 export function RecentGalleries({
@@ -97,7 +97,7 @@ export function RecentGalleries({
             return (
               <li key={gallery.id}>
                 <Link
-                  href={getGalleryHref()}
+                  href={getGalleryHref(gallery.id)}
                   aria-label={`Abrir galeria ${gallery.name}`}
                   className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-zinc-800/50 focus-visible:bg-zinc-800/50 focus-visible:outline-none"
                 >

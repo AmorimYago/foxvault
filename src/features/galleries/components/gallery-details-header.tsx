@@ -1,0 +1,92 @@
+import {
+  CalendarDays,
+  Globe2,
+  ImageUp,
+  Lock,
+  Users,
+} from "lucide-react";
+
+import { type GalleryDetails } from "../types/gallery-details";
+
+type GalleryDetailsHeaderProps = {
+  gallery: GalleryDetails;
+};
+
+const visibilityConfiguration = {
+  PRIVATE: {
+    label: "Privada",
+    icon: Lock,
+  },
+  SHARED: {
+    label: "Compartilhada",
+    icon: Users,
+  },
+  PUBLIC: {
+    label: "Pública",
+    icon: Globe2,
+  },
+} as const;
+
+export function GalleryDetailsHeader({
+  gallery,
+}: GalleryDetailsHeaderProps) {
+  const visibility = visibilityConfiguration[gallery.visibility];
+  const VisibilityIcon = visibility.icon;
+
+  return (
+    <header className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <h1 className="wrap-break-word text-3xl font-bold tracking-tight text-zinc-100">
+            {gallery.name}
+          </h1>
+
+          {gallery.description && (
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">
+              {gallery.description}
+            </p>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-500">
+            <span className="inline-flex items-center gap-1.5">
+              <VisibilityIcon
+                aria-hidden="true"
+                className="size-4"
+              />
+
+              {visibility.label}
+            </span>
+
+            <span>
+              {gallery.imageCount}{" "}
+              {gallery.imageCount === 1 ? "imagem" : "imagens"}
+            </span>
+
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays
+                aria-hidden="true"
+                className="size-4"
+              />
+
+              Criada em{" "}
+              {gallery.createdAt.toLocaleDateString("pt-BR")}
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          disabled
+          className="inline-flex cursor-not-allowed items-center justify-center gap-2 self-start rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 opacity-60"
+        >
+          <ImageUp
+            aria-hidden="true"
+            className="size-4"
+          />
+
+          Enviar imagens
+        </button>
+      </div>
+    </header>
+  );
+}
