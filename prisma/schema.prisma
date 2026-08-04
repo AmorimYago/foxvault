@@ -112,6 +112,7 @@ model GalleryMember {
 
 model Image {
   id               String   @id @default(cuid())
+  publicImageId    String   @unique @default(uuid())
   originalFilename String
   storageKey       String   @unique
   contentType      String

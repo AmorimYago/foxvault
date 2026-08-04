@@ -21,6 +21,11 @@ type FindAccessibleGalleryByIdRepositoryInput = {
   userId: string;
 };
 
+type FindGalleryUploadAccessRepositoryInput = {
+  galleryId: string;
+  userId: string;
+};
+
 async function create({
   ownerId,
   name,
@@ -110,6 +115,45 @@ async function findAccessibleById({
   });
 }
 
+async function findUploadAccess({
+  galleryId,
+  userId,
+}: FindGalleryUploadAccessRepositoryInput) {
+  return prismaClient.gallery.findFirst({
+    where: {
+      id: galleryId,
+      OR: [
+        {
+          ownerId: userId,
+        },
+        {
+          members: {
+            some: {
+              userId,
+              role: {
+                in: ["OWNER", "EDITOR"],
+              },
+            },
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      ownerId: true,
+      members: {
+        where: {
+          userId,
+        },
+        select: {
+          role: true,
+        },
+        take: 1,
+      },
+    },
+  });
+}
+
 async function updateOwned({
   galleryId,
   ownerId,
@@ -146,6 +190,7 @@ export const galleryRepository = {
   create,
   deleteOwned,
   findAccessibleById,
+  findUploadAccess,
   listByOwner,
   updateOwned,
 };
@@ -156,4 +201,8 @@ export type GalleryListItem = Awaited<
 
 export type AccessibleGalleryDetails = Awaited<
   ReturnType<typeof galleryRepository.findAccessibleById>
+>;
+
+export type GalleryUploadAccess = Awaited<
+  ReturnType<typeof galleryRepository.findUploadAccess>
 >;

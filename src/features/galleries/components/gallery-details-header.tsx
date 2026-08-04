@@ -1,15 +1,17 @@
 import {
   CalendarDays,
   Globe2,
-  ImageUp,
   Lock,
   Users,
 } from "lucide-react";
+
+import { UploadButton } from "@/features/image-upload/components/upload-button";
 
 import { type GalleryDetails } from "../types/gallery-details";
 
 type GalleryDetailsHeaderProps = {
   gallery: GalleryDetails;
+  uploadDialogId: string;
 };
 
 const visibilityConfiguration = {
@@ -29,9 +31,14 @@ const visibilityConfiguration = {
 
 export function GalleryDetailsHeader({
   gallery,
+  uploadDialogId,
 }: GalleryDetailsHeaderProps) {
   const visibility = visibilityConfiguration[gallery.visibility];
   const VisibilityIcon = visibility.icon;
+
+  const canUploadImages =
+    gallery.userRole === "OWNER" ||
+    gallery.userRole === "EDITOR";
 
   return (
     <header className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
@@ -74,18 +81,10 @@ export function GalleryDetailsHeader({
           </div>
         </div>
 
-        <button
-          type="button"
-          disabled
-          className="inline-flex cursor-not-allowed items-center justify-center gap-2 self-start rounded-lg bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 opacity-60"
-        >
-          <ImageUp
-            aria-hidden="true"
-            className="size-4"
-          />
-
-          Enviar imagens
-        </button>
+        <UploadButton
+          dialogId={uploadDialogId}
+          disabled={!canUploadImages}
+        />
       </div>
     </header>
   );
