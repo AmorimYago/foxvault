@@ -7,6 +7,7 @@ import { getGalleryDetailsService } from "@/features/galleries/services/get-gall
 import { UploadDialog } from "@/features/image-upload/components/upload-dialog";
 import { GalleryImagesGrid } from "@/features/images/components/gallery-images-grid";
 import { getGalleryImagesService } from "@/features/images/services/get-gallery-images-service";
+import { ShareGalleryDialog } from "@/features/sharing/components/share-gallery-dialog";
 
 type GalleryDetailsPageProps = {
   params: Promise<{
@@ -39,10 +40,12 @@ export default async function GalleryDetailsPage({
   });
 
   const uploadDialogId = `upload-images-dialog-${gallery.id}`;
+  const shareDialogId = `share-gallery-dialog-${gallery.id}`;
+
+  const isOwner = gallery.userRole === "OWNER";
 
   const canUploadImages =
-    gallery.userRole === "OWNER" ||
-    gallery.userRole === "EDITOR";
+    isOwner || gallery.userRole === "EDITOR";
 
   return (
     <>
@@ -50,6 +53,7 @@ export default async function GalleryDetailsPage({
         <GalleryDetailsHeader
           gallery={gallery}
           uploadDialogId={uploadDialogId}
+          shareDialogId={shareDialogId}
         />
 
         {images.length === 0 ? (
@@ -62,11 +66,21 @@ export default async function GalleryDetailsPage({
         )}
       </div>
 
-      <UploadDialog
-        dialogId={uploadDialogId}
-        galleryId={gallery.id}
-        galleryName={gallery.name}
-      />
+      {canUploadImages && (
+        <UploadDialog
+          dialogId={uploadDialogId}
+          galleryId={gallery.id}
+          galleryName={gallery.name}
+        />
+      )}
+
+      {isOwner && (
+        <ShareGalleryDialog
+          dialogId={shareDialogId}
+          galleryId={gallery.id}
+          galleryName={gallery.name}
+        />
+      )}
     </>
   );
 }

@@ -66,6 +66,83 @@ async function listByOwner(ownerId: string) {
   });
 }
 
+async function listDashboard(userId: string) {
+  const [ownedGalleries, sharedGalleries] =
+    await prismaClient.$transaction([
+      prismaClient.gallery.findMany({
+        where: {
+          ownerId: userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          visibility: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: {
+            select: {
+              images: true,
+            },
+          },
+        },
+      }),
+
+      prismaClient.gallery.findMany({
+        where: {
+          ownerId: {
+            not: userId,
+          },
+          members: {
+            some: {
+              userId,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          visibility: true,
+          createdAt: true,
+          updatedAt: true,
+          owner: {
+            select: {
+              name: true,
+              email: true,
+              image: true,
+            },
+          },
+          members: {
+            where: {
+              userId,
+            },
+            select: {
+              role: true,
+            },
+            take: 1,
+          },
+          _count: {
+            select: {
+              images: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+  return {
+    ownedGalleries,
+    sharedGalleries,
+  };
+}
+
 async function findAccessibleById({
   galleryId,
   userId,
@@ -192,12 +269,23 @@ export const galleryRepository = {
   findAccessibleById,
   findUploadAccess,
   listByOwner,
+  listDashboard,
   updateOwned,
 };
 
 export type GalleryListItem = Awaited<
   ReturnType<typeof galleryRepository.listByOwner>
 >[number];
+
+export type GalleryDashboardRepositoryResult = Awaited<
+  ReturnType<typeof galleryRepository.listDashboard>
+>;
+
+export type OwnedGalleryDashboardRepositoryItem =
+  GalleryDashboardRepositoryResult["ownedGalleries"][number];
+
+export type SharedGalleryDashboardRepositoryItem =
+  GalleryDashboardRepositoryResult["sharedGalleries"][number];
 
 export type AccessibleGalleryDetails = Awaited<
   ReturnType<typeof galleryRepository.findAccessibleById>

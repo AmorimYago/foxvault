@@ -1,11 +1,17 @@
-import { FolderOpen, Globe2, Lock, Users } from "lucide-react";
+import {
+  FolderOpen,
+  Globe2,
+  Lock,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 
-import { type GalleryListItem } from "../repositories/gallery-repository";
+import { type GalleryCardItem } from "../types/gallery-card-item";
 import { GalleryCardActions } from "./gallery-card-actions";
 
 type GalleryCardProps = {
-  gallery: GalleryListItem;
+  gallery: GalleryCardItem;
 };
 
 const visibilityConfiguration = {
@@ -23,10 +29,21 @@ const visibilityConfiguration = {
   },
 } as const;
 
-export function GalleryCard({ gallery }: GalleryCardProps) {
-  const visibility = visibilityConfiguration[gallery.visibility];
+const roleLabel = {
+  OWNER: "Dono",
+  EDITOR: "Editor",
+  VIEWER: "Visualizador",
+} as const;
+
+export function GalleryCard({
+  gallery,
+}: GalleryCardProps) {
+  const visibility =
+    visibilityConfiguration[gallery.visibility];
+
   const VisibilityIcon = visibility.icon;
   const galleryHref = `/galleries/${gallery.id}`;
+  const isOwner = gallery.userRole === "OWNER";
 
   return (
     <article className="group relative rounded-2xl border border-zinc-800 bg-zinc-900 transition-all duration-200 hover:-translate-y-0.5 hover:border-zinc-700 hover:shadow-lg hover:shadow-black/10">
@@ -54,7 +71,18 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
             </p>
           )}
 
-          <div className="mt-4 flex items-center justify-between gap-4 text-xs text-zinc-500">
+          {gallery.owner && !isOwner && (
+            <p className="mt-2 truncate text-xs text-zinc-500">
+              Compartilhada por{" "}
+              <span className="text-zinc-400">
+                {gallery.owner.name ||
+                  gallery.owner.email ||
+                  "Usuário"}
+              </span>
+            </p>
+          )}
+
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-500">
             <span className="flex items-center gap-1.5">
               <VisibilityIcon
                 aria-hidden="true"
@@ -65,23 +93,38 @@ export function GalleryCard({ gallery }: GalleryCardProps) {
             </span>
 
             <span>
-              {gallery._count.images}{" "}
-              {gallery._count.images === 1 ? "imagem" : "imagens"}
+              {gallery.imageCount}{" "}
+              {gallery.imageCount === 1
+                ? "imagem"
+                : "imagens"}
             </span>
           </div>
+
+          {!isOwner && (
+            <div className="mt-3 flex items-center gap-1.5 border-t border-zinc-800 pt-3 text-xs text-zinc-500">
+              <ShieldCheck
+                aria-hidden="true"
+                className="size-3.5 text-orange-400"
+              />
+
+              Acesso como {roleLabel[gallery.userRole]}
+            </div>
+          )}
         </div>
       </Link>
 
-      <div className="absolute top-[calc(56.25%+1rem)] right-4 z-10">
-        <GalleryCardActions
-          gallery={{
-            id: gallery.id,
-            name: gallery.name,
-            description: gallery.description,
-            visibility: gallery.visibility,
-          }}
-        />
-      </div>
+      {isOwner && (
+        <div className="absolute top-[calc(56.25%+1rem)] right-4 z-10">
+          <GalleryCardActions
+            gallery={{
+              id: gallery.id,
+              name: gallery.name,
+              description: gallery.description,
+              visibility: gallery.visibility,
+            }}
+          />
+        </div>
+      )}
     </article>
   );
 }

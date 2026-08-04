@@ -1,15 +1,20 @@
-import { type GalleryListItem } from "../repositories/gallery-repository";
+import { type GalleryCardItem } from "../types/gallery-card-item";
 import { GalleryCard } from "./gallery-card";
 
 type GalleriesGridProps = {
-  galleries: GalleryListItem[];
+  galleries: GalleryCardItem[];
 };
 
-export function GalleriesGrid({ galleries }: GalleriesGridProps) {
+export function GalleriesGrid({
+  galleries,
+}: GalleriesGridProps) {
   return (
-    <section className="grid grid-cols-1 gap-5 py-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+    <section className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
       {galleries.map((gallery) => (
-        <GalleryCard key={gallery.id} gallery={gallery} />
+        <GalleryCard
+          key={gallery.id}
+          gallery={gallery}
+        />
       ))}
     </section>
   );

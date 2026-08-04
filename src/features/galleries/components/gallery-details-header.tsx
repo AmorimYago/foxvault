@@ -6,12 +6,14 @@ import {
 } from "lucide-react";
 
 import { UploadButton } from "@/features/image-upload/components/upload-button";
+import { ShareGalleryButton } from "@/features/sharing/components/share-gallery-button";
 
 import { type GalleryDetails } from "../types/gallery-details";
 
 type GalleryDetailsHeaderProps = {
   gallery: GalleryDetails;
   uploadDialogId: string;
+  shareDialogId: string;
 };
 
 const visibilityConfiguration = {
@@ -32,13 +34,15 @@ const visibilityConfiguration = {
 export function GalleryDetailsHeader({
   gallery,
   uploadDialogId,
+  shareDialogId,
 }: GalleryDetailsHeaderProps) {
   const visibility = visibilityConfiguration[gallery.visibility];
   const VisibilityIcon = visibility.icon;
 
+  const isOwner = gallery.userRole === "OWNER";
+
   const canUploadImages =
-    gallery.userRole === "OWNER" ||
-    gallery.userRole === "EDITOR";
+    isOwner || gallery.userRole === "EDITOR";
 
   return (
     <header className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
@@ -81,10 +85,15 @@ export function GalleryDetailsHeader({
           </div>
         </div>
 
-        <UploadButton
-          dialogId={uploadDialogId}
-          disabled={!canUploadImages}
-        />
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {isOwner && (
+            <ShareGalleryButton dialogId={shareDialogId} />
+          )}
+
+          {canUploadImages && (
+            <UploadButton dialogId={uploadDialogId} />
+          )}
+        </div>
       </div>
     </header>
   );
